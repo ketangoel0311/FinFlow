@@ -5,6 +5,8 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+const authRoutes = require("./routes/auth");
+
 const app = express();
 
 const corsOptions = {
@@ -18,12 +20,21 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/finflow")
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+
+app.use("/api/auth", authRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
+});
+
+app.use((err, req, res, next) => {
+  res.status(500).json({ message: "Server error" });
 });
 
 const PORT = process.env.PORT || 5001;
