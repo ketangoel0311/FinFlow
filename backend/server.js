@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const accountRoutes = require("./routes/accounts");
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ mongoose
   });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/accounts", accountRoutes);
+
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
